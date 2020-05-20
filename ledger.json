@@ -1,0 +1,1 @@
+[{"id": 1, "account": 2, "debit": 100, "credit": 0}, {"id": 1, "account": 1, "debit": 0, "credit": 100}, {"id": 2, "account": 1, "debit": 50, "credit": 0}, {"id": 2, "account": 3, "debit": 0, "credit": 50}, {"id": 3, "account": 5, "debit": 10, "credit": 0}, {"id": 3, "account": 4, "debit": 0, "credit": 10}]
