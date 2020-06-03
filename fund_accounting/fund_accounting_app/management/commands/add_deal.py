@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 class Command(BaseCommand):
 
-    help = "Inititate a complete new portfolio."
+    help = "Add Deal"
 
     def add_arguments(self, parser):
         parser.add_argument("name", type=str, help="Name of this portfolio")
