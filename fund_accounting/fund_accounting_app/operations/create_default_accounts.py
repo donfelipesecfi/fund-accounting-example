@@ -149,32 +149,42 @@ def add_deal_accounts(
     interest_equity,
 ) -> Deal:
 
-    fund_manager = FundManager.objects.get(uuid=fund_manager)
+    fund_manager = FundManager.objects.get(id=fund_manager)
+    import pdb
 
+    pdb.set_trace()
     account_equity = Account(
         name=f"Equity {company_name}",
-        parent=get_parent(f"{fund_manager.fund_numbe}03"),
+        code=None,
+        full_code=None,
+        parent=get_parent(f"{fund_manager.fund_number}03"),
         currencies=["USD"],
     )
     account_equity.save()
 
     account_equity_unreal = Account(
         name=f"Unrealized Equity {company_name}",
-        parent=get_parent(f"{fund_manager.fund_numbe}05"),
+        code=None,
+        full_code=None,
+        parent=get_parent(f"{fund_manager.fund_number}05"),
         currencies=["USD"],
     )
     account_equity_unreal.save()
 
     account_fixed_income = Account(
         name=f"Fixed Income {company_name}",
-        parent=get_parent(f"{fund_manager.fund_numbe}04"),
+        code=None,
+        full_code=None,
+        parent=get_parent(f"{fund_manager.fund_number}04"),
         currencies=["USD"],
     )
     account_fixed_income.save()
 
     account_fixed_income_unreal = Account(
         name=f"Unrealized Fixed Income {company_name}",
-        parent=get_parent(f"{fund_manager.fund_numbe}06"),
+        code=None,
+        full_code=None,
+        parent=get_parent(f"{fund_manager.fund_number}06"),
         currencies=["USD"],
     )
     account_fixed_income_unreal.save()
@@ -240,6 +250,9 @@ def initial_book_deal(
     interest_equity,
     value_per_share,
 ):
+    import pdb
+
+    pdb.set_trace()
     deal = add_deal_accounts(
         company_name,
         fund_manager,
