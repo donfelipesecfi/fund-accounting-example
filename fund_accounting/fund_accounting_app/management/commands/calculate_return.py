@@ -31,10 +31,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        NAV = default.get_top_level_portfolio_returns(
+        NAVs = default.get_top_level_portfolio_returns(
             options["pf_number"], options["start_date"], options["end_date"]
         )
-        pddf = pandas.DataFrame.from_dict(NAV)
+        pddf = pandas.DataFrame.from_dict(
+            {(i, j): NAVs[i][j] for i in NAVs.keys() for j in NAVs[i].keys()},
+            orient="index",
+        )
         import pdb
 
         pdb.set_trace()
@@ -42,4 +45,4 @@ class Command(BaseCommand):
             f'Returns_{options["start_date"].strftime("%d-%m-%Y")}_{options["end_date"].strftime("%d-%m-%Y")}.csv'
         )
 
-        self.stdout.write(self.style.SUCCESS(f"NAV (unrealized) is {NAV}"))
+        self.stdout.write(self.style.SUCCESS(f"{NAVs}"))

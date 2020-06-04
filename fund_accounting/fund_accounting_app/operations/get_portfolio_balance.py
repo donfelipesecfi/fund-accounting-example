@@ -100,10 +100,6 @@ def get_top_level_portfolio_returns(pf_number, ref_date_start, ref_date_end):
     portfolio_ref_date_end = get_top_level_portfolio_value(pf_number, ref_date_end)
     return_dict = {}
 
-    import pdb
-
-    pdb.set_trace()
-
     for key in portfolio_ref_date_start.keys():
         inner_dict = {}
         relative_vals = {}
