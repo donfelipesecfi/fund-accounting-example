@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        NAV = default.calculate_top_level_returns(
+        NAV = default.get_top_level_portfolio_returns(
             options["pf_number"], options["start_date"], options["end_date"]
         )
         pddf = pandas.DataFrame.from_dict(NAV)

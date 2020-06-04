@@ -1,0 +1,1 @@
+DROP TABLE hordak_account, hordak_leg, hordak_statementimport, hordak_statementline, hordak_transaction, hordak_transactioncsvimport, hordak_transactioncsvimportcolumn, fund_accounting_app_deal, fund_accounting_app_fundmanager CASCADE;

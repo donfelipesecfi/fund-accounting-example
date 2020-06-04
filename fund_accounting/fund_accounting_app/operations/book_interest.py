@@ -32,10 +32,6 @@ def book_interest_unrealized(deal: Deal, amount: Money, date):
         )
 
 
-def check_value_has_not_yet_been_booked():
-    pass
-
-
 def book_interest_all_deals_from_last_booking_day():
 
     all_deals = Deal.objects.all()
