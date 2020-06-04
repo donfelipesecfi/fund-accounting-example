@@ -229,7 +229,9 @@ def book_deal_values(
 
         cash_account = Account.objects.get(code=f"B{deal.fund_manager.fund_number}")
         cash_account.transfer_to(
-            to_account=deal.fi_account, amount=Money(deal.total_loan_amount, "USD")
+            to_account=deal.fi_account,
+            date=date if date is not None else None,
+            amount=Money(deal.total_loan_amount, "USD",),
         )
         with db_transaction.atomic():
             if date:
