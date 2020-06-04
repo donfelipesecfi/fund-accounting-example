@@ -30,20 +30,30 @@ class Deal(models.Model):
     # foreign keys
     company = models.UUIDField(null=False, blank=False)
     fund_manager = models.ForeignKey(FundManager, null=False, on_delete=models.CASCADE)
-    # account = models.ForeignKey(Account, on_delete=models.CASCADE, null=False)
 
-    eq_account = models.ForeignKey(
-        Account, on_delete=models.CASCADE, null=False, related_name="eq_account"
+    eq_account_value = models.ForeignKey(
+        Account, on_delete=models.CASCADE, null=False, related_name="eq_account_value"
     )
+
+    eq_account_stock = models.ForeignKey(
+        Account, on_delete=models.CASCADE, null=False, related_name="eq_account_stock"
+    )
+
     eq_unrealized_account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
         null=False,
         related_name="eq_unrealized_account",
     )
-    fi_account = models.ForeignKey(
-        Account, on_delete=models.CASCADE, null=False, related_name="fi_account"
+
+    fi_account_value = models.ForeignKey(
+        Account, on_delete=models.CASCADE, null=False, related_name="fi_account_value"
     )
+
+    fi_account_stock = models.ForeignKey(
+        Account, on_delete=models.CASCADE, null=False, related_name="fi_account_stock"
+    )
+
     fi_unrealized_account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
