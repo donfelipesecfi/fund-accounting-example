@@ -62,35 +62,65 @@ def get_top_level_portfolio_value(pf_number, date=None):
         Account.objects.get(code=f"B{pf_number}").balance(**kwargs).__getitem__("USD")
     )
 
+    total_nav = NAV_equity + NAV_fixed_income + NAV_cash
+
     return {
         "total": {
-            "total_value": NAV_equity + NAV_fixed_income + NAV_cash,
-            "change_value": NAV_equity_value + NAV_fixed_income_value,
-            "added_value": NAV_equity_stock + NAV_fixed_income_stock,
+            "total_value": {"value": total_nav, "weight": 1},
+            "change_value": {
+                "value": NAV_equity_value + NAV_fixed_income_value,
+                "weight": (NAV_equity_value + NAV_fixed_income_value) / total_nav,
+            },
+            "added_value": {
+                "value": NAV_equity_stock + NAV_fixed_income_stock,
+                "weight": (NAV_equity_stock + NAV_fixed_income_stock) / total_nav,
+            },
         },
         "equity": {
-            "total_value": NAV_equity,
-            "change_value": NAV_equity_value,
-            "added_value": NAV_equity_stock,
+            "total_value": {
+                "value": NAV_equity,
+                "weight": (NAV_equity / total_nav) - 1,
+            },
+            "change_value": {
+                "value": NAV_equity_value,
+                "weight": NAV_equity_value / NAV_equity,
+            },
+            "added_value": {
+                "value": NAV_equity_stock,
+                "weight": (NAV_equity_stock / NAV_equity),
+            },
         },
         "fixed_income": {
-            "total_value": NAV_fixed_income,
-            "change_value": NAV_fixed_income_value,
-            "added_value": NAV_fixed_income_stock,
+            "total_value": {
+                "value": NAV_fixed_income,
+                "weight": (NAV_fixed_income / total_nav) - 1,
+            },
+            "change_value": {
+                "value": NAV_fixed_income_value,
+                "weight": (NAV_fixed_income_value / NAV_fixed_income),
+            },
+            "added_value": {
+                "value": NAV_fixed_income_stock,
+                "weight": (NAV_fixed_income_stock / NAV_fixed_income),
+            },
         },
-        "cash": {"total_value": NAV_cash},
+        "cash": {
+            "total_value": {"value": NAV_cash, "weight": (NAV_cash / total_nav) - 1}
+        },
     }
 
 
-def calulate_return(val_t0, val_t1):
+def calulate_return(val_t0, val_t1, weight=1):
 
     return_value = None
     try:
-        return_value = (val_t1 / val_t0) - 1
+        return_value = weight * (val_t1 / val_t0)
     except decimal.InvalidOperation:
         pass
     except decimal.ZeroDivisionError:
         pass
+    if weight == 1:
+        return return_value - 1
     return return_value
 
 
@@ -99,19 +129,21 @@ def get_top_level_portfolio_returns(pf_number, ref_date_start, ref_date_end):
     portfolio_ref_date_start = get_top_level_portfolio_value(pf_number, ref_date_start)
     portfolio_ref_date_end = get_top_level_portfolio_value(pf_number, ref_date_end)
     return_dict = {}
-
     for key in portfolio_ref_date_start.keys():
-        inner_dict = {}
+
         relative_vals = {}
         absolute_vals = {}
         for key2 in portfolio_ref_date_start[key].keys():
+
             relative_vals[f"{key2} in %"] = calulate_return(
-                portfolio_ref_date_start[key][key2], portfolio_ref_date_end[key][key2]
+                portfolio_ref_date_start[key][key2]["value"],
+                portfolio_ref_date_end[key][key2]["value"],
+                weight=portfolio_ref_date_end[key][key2]["weight"],
             )
 
             absolute_vals[key2] = {
-                "begin_period": portfolio_ref_date_start[key][key2],
-                "end_period": portfolio_ref_date_end[key][key2],
+                "begin_period": portfolio_ref_date_start[key][key2]["value"],
+                "end_period": portfolio_ref_date_end[key][key2]["value"],
             }
         reative_absolut_values = {"relative": relative_vals, "absolute": absolute_vals}
         return_dict[key] = reative_absolut_values
