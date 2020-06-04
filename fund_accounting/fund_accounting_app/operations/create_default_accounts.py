@@ -13,30 +13,30 @@ def create_parent_accounts():
 
     """
     portfolio_1_account = Account(
-        name="Portfolio", code="001", type=Account.TYPES.equity, currencies=["USD"],
+        name="Portfolio", code="A", type=Account.TYPES.equity, currencies=["USD"],
     ).save()
     usd_cash_account = Account(
         name="USD Account",
-        code="002",
+        code="B",
         type=Account.TYPES.asset,
         is_bank_account=True,
         currencies=["USD"],
     ).save()
     equity_account = Account(
-        name="Equity", code="003", type=Account.TYPES.asset, currencies=["USD"],
+        name="Equity", code="C", type=Account.TYPES.asset, currencies=["USD"],
     ).save()
     fixed_income_account = Account(
-        name="Fixed Income", code="004", type=Account.TYPES.asset, currencies=["USD"],
+        name="Fixed Income", code="D", type=Account.TYPES.asset, currencies=["USD"],
     ).save()
     equity_account_unrealized = Account(
         name="Equity unrealized",
-        code="005",
+        code="E",
         type=Account.TYPES.liability,
         currencies=["USD"],
     ).save()
     fixed_income_account_unrealized = Account(
         name="Fixed Income unrealized",
-        code="006",
+        code="F",
         type=Account.TYPES.liability,
         currencies=["USD"],
     ).save()
@@ -46,51 +46,55 @@ def get_parent(code):
     return Account.objects.get(code=code)
 
 
+def get_account_code():
+    return Account.objects.all().count() + 1
+
+
 def create_portfolio(pf_name, pf_number):
 
     portfolio_1_account = Account(
         name=f"Portfolio {pf_name} ",
-        parent=get_parent("001"),
-        code=f"{pf_number}01",
-        full_code=f"001_{pf_number}",
+        parent=get_parent("A"),
+        code=f"A{pf_number}",
+        full_code=f"A_{pf_number}",
         currencies=["USD"],
     ).save()
 
     usd_cash_account = Account(
         name=f"USD Account {pf_name} ",
-        parent=get_parent("002"),
-        code=f"{pf_number}02",
-        full_code=f"002_{pf_number}",
+        parent=get_parent("B"),
+        code=f"B{pf_number}",
+        full_code=f"B_{pf_number}",
         currencies=["USD"],
     ).save()
 
     equity_account = Account(
         name=f"Equity {pf_name} ",
-        code=f"{pf_number}03",
-        parent=get_parent("003"),
-        full_code=f"003_{pf_number}",
+        code=f"C{pf_number}",
+        parent=get_parent("C"),
+        full_code=f"C_{pf_number}",
         currencies=["USD"],
     ).save()
 
     fixed_income_account = Account(
         name=f"Fixed Income  {pf_name} ",
-        parent=get_parent("004"),
-        code=f"{pf_number}04",
-        full_code=f"004_{pf_number}",
+        parent=get_parent("D"),
+        code=f"D{pf_number}",
+        full_code=f"D_{pf_number}",
         currencies=["USD"],
     ).save()
     equity_account_unrealized = Account(
         name=f"Equity unrealized {pf_name} ",
-        parent=get_parent("005"),
-        code=f"{pf_number}05",
-        full_code=f"005_{pf_number}",
+        parent=get_parent("E"),
+        code=f"E{pf_number}",
+        full_code=f"E_{pf_number}",
         currencies=["USD"],
     ).save()
     fixed_income_account_unrealized = Account(
         name=f"Fixed Income unrealized {pf_name} ",
-        parent=get_parent("006"),
-        code=f"{pf_number}06",
-        full_code=f"006_{pf_number}",
+        parent=get_parent("F"),
+        code=f"F{pf_number}",
+        full_code=f"F{pf_number}",
         currencies=["USD"],
     ).save()
 
@@ -98,29 +102,33 @@ def create_portfolio(pf_name, pf_number):
 def add_fund_manager_add_book_cash(
     pf_number, fund_manager, amount, date=FileNotFoundError
 ):
+    import pdb
 
+    pdb.set_trace()
+    code_manager = get_account_code()
     account = Account(
         name=f"Fund Manager {fund_manager}",
-        parent=get_parent(f"{pf_number}01"),
-        code="111",
-        full_code=f"001_{pf_number}_001",
+        parent=get_parent(f"A{pf_number}"),
+        code=code_manager,
+        full_code=f"A_{pf_number}_{code_manager}",
         currencies=["USD"],
     )
     account.save()
 
     cash_account = Account(
         name=f"USD Account {fund_manager}",
-        parent=get_parent(f"{pf_number}02"),
-        code=f"{pf_number}12",
-        full_code=f"002_{pf_number}_001",
+        parent=get_parent(f"B{pf_number}"),
+        code=f"{get_account_code()}",
+        full_code=f"B_{pf_number}_{get_account_code()}",
         currencies=["USD"],
     )
     cash_account.save()
 
     manager = FundManager(
         name=fund_manager,
-        account=get_parent(f"{pf_number}01"),
+        account=get_parent(code_manager),
         fund=uuid.uuid4(),
+        fund_number=pf_number,
         hurdle=Decimal(0.1),
     )
     manager.save()
@@ -139,6 +147,11 @@ def add_fund_manager_add_book_cash(
         )
 
 
+def get_deal_id():
+
+    return Deal.objects.all().count() + 1
+
+
 def add_deal_accounts(
     company_name,
     fund_manager,
@@ -150,41 +163,42 @@ def add_deal_accounts(
 ) -> Deal:
 
     fund_manager = FundManager.objects.get(id=fund_manager)
+
     import pdb
 
     pdb.set_trace()
     account_equity = Account(
         name=f"Equity {company_name}",
-        code=None,
-        full_code=None,
-        parent=get_parent(f"{fund_manager.fund_number}03"),
+        code=get_account_code(),
+        full_code=f"C_{fund_manager.fund_number}_{get_deal_id()}",
+        parent=get_parent(f"C{fund_manager.fund_number}"),
         currencies=["USD"],
     )
     account_equity.save()
 
     account_equity_unreal = Account(
         name=f"Unrealized Equity {company_name}",
-        code=None,
-        full_code=None,
-        parent=get_parent(f"{fund_manager.fund_number}05"),
+        code=get_account_code(),
+        full_code=f"005_{fund_manager.fund_number}_{get_deal_id()}",
+        parent=get_parent(f"E{fund_manager.fund_number}"),
         currencies=["USD"],
     )
     account_equity_unreal.save()
 
     account_fixed_income = Account(
         name=f"Fixed Income {company_name}",
-        code=None,
-        full_code=None,
-        parent=get_parent(f"{fund_manager.fund_number}04"),
+        code=get_account_code(),
+        full_code=f"004_{fund_manager.fund_number}_{get_deal_id()}",
+        parent=get_parent(f"D{fund_manager.fund_number}"),
         currencies=["USD"],
     )
     account_fixed_income.save()
 
     account_fixed_income_unreal = Account(
         name=f"Unrealized Fixed Income {company_name}",
-        code=None,
-        full_code=None,
-        parent=get_parent(f"{fund_manager.fund_number}06"),
+        code=get_account_code(),
+        full_code=f"006_{fund_manager.fund_number}_{get_deal_id()}",
+        parent=get_parent(f"F{fund_manager.fund_number}"),
         currencies=["USD"],
     )
     account_fixed_income_unreal.save()
@@ -213,7 +227,7 @@ def book_deal_values(
 
     if initial_booking:
 
-        cash_account = Account.objects.get(code=f"{deal.fund_manager.fund_number}02")
+        cash_account = Account.objects.get(code=f"B{deal.fund_manager.fund_number}")
         cash_account.transfer_to(
             to_account=deal.fi_account, amount=Money(deal.total_loan_amount, "USD")
         )
@@ -250,9 +264,7 @@ def initial_book_deal(
     interest_equity,
     value_per_share,
 ):
-    import pdb
 
-    pdb.set_trace()
     deal = add_deal_accounts(
         company_name,
         fund_manager,
