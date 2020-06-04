@@ -99,9 +99,7 @@ def create_portfolio(pf_name, pf_number):
     ).save()
 
 
-def add_fund_manager_add_book_cash(
-    pf_number, fund_manager, amount, date=FileNotFoundError
-):
+def add_fund_manager_add_book_cash(pf_number, fund_manager, amount, date=None):
     import pdb
 
     pdb.set_trace()
@@ -140,10 +138,12 @@ def add_fund_manager_add_book_cash(
             transaction = Transaction.objects.create()
 
         Leg.objects.create(
-            transaction=transaction, account=cash_account, amount=Money(amount, "USD"),
+            transaction=transaction,
+            account=cash_account,
+            amount=Money(amount * -1, "USD"),
         )
         Leg.objects.create(
-            transaction=transaction, account=account, amount=Money(amount * -1, "USD"),
+            transaction=transaction, account=account, amount=Money(amount, "USD"),
         )
 
 
@@ -240,12 +240,12 @@ def book_deal_values(
             Leg.objects.create(
                 transaction=transaction,
                 account=deal.eq_account,
-                amount=Money(transaction_value, "USD"),
+                amount=Money(transaction_value * -1, "USD"),
             )
             Leg.objects.create(
                 transaction=transaction,
                 account=deal.eq_unrealized_account,
-                amount=Money(transaction_value * -1, "USD"),
+                amount=Money(transaction_value, "USD"),
             )
 
     else:
