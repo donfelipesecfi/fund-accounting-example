@@ -32,8 +32,6 @@ class CreateNewFundManager:
         fund_manager.save()
 
 
-
-
         return account, fund_manager, fund_manager_cash_account
         
     def _book_transaction(self,account,):

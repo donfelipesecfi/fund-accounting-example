@@ -18,9 +18,7 @@ class Command(BaseCommand):
     help = "Add Deal"
 
     def add_arguments(self, parser):
-        # parser.add_argument("pf_number", type=int, help="Number of portfolio")
-        # parser.add_argument("company_name", type=str, help="CompanyName")
-        # parser.add_argument("company", type=str, help="USD Amount of Fund Manager")
+
         parser.add_argument(
             "deal_date", type=valid_date, help="Date on which we add this to PF"
         )
@@ -31,20 +29,8 @@ class Command(BaseCommand):
         parser.add_argument("interest_equity", type=float)
         parser.add_argument("value_per_share", type=float)
 
-    # deal_date,
-    # company_name,
-    # fund_manager,
-    # company,
-    # total_loan_amount,
-    # total_collateral_shares,
-    # interest_loan,
-    # interest_equity,
-    # value_per_share,
-
     def handle(self, *args, **options):
-        import pdb
 
-        pdb.set_trace()
         default.initial_book_deal(
             deal_date=options["deal_date"],
             company_name="TEST COMP",

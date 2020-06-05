@@ -3,6 +3,24 @@ from .helper_conversions import convert_balance_to_money_usd
 import decimal
 
 
+def calculate_value_fixed_income_from_deal(deal, **kwargs):
+
+    return deal.fi_account_value.balance(**kwargs).__getitem__("USD")
+
+
+def calculate_stock_fixed_income_from_deal(deal, **kwargs):
+
+    return deal.fi_account_stock.balance(**kwargs).__getitem__("USD")
+
+
+def calculate_total_value_fixed_income_from_deal(deal, **kwargs):
+
+    stock = calculate_stock_fixed_income_from_deal(deal, **kwargs)
+    value = calculate_value_fixed_income_from_deal(deal, **kwargs)
+
+    return stock + value
+
+
 def get_equity_portfolio_value(pf_number, **kwargs):
 
     return (
@@ -75,17 +93,17 @@ def get_top_level_portfolio_value(pf_number, date=None):
                 "value": NAV_equity_stock + NAV_fixed_income_stock,
                 "weight": (NAV_equity_stock + NAV_fixed_income_stock) / total_nav,
             },
-            "uninvested_cash": {"value": NAV_cash, "weight": (NAV_cash / total_nav)},
+            "uninvested_cash": {"value": NAV_cash, "weight": NAV_cash / total_nav},
         },
         "equity": {
             "total_value": {"value": NAV_equity, "weight": (NAV_equity / total_nav),},
             "change_value": {
                 "value": NAV_equity_value,
-                "weight": NAV_equity_value / NAV_equity,
+                "weight": NAV_equity_value / total_nav,
             },
             "added_value": {
                 "value": NAV_equity_stock,
-                "weight": (NAV_equity_stock / NAV_equity),
+                "weight": (NAV_equity_stock / total_nav),
             },
         },
         "fixed_income": {
@@ -95,14 +113,14 @@ def get_top_level_portfolio_value(pf_number, date=None):
             },
             "change_value": {
                 "value": NAV_fixed_income_value,
-                "weight": (NAV_fixed_income_value / NAV_fixed_income),
+                "weight": (NAV_fixed_income_value / total_nav),
             },
             "added_value": {
                 "value": NAV_fixed_income_stock,
-                "weight": (NAV_fixed_income_stock / NAV_fixed_income),
+                "weight": (NAV_fixed_income_stock / total_nav),
             },
         },
-        "cash": {"total_value": {"value": NAV_cash, "weight": (NAV_cash / total_nav)}},
+        "cash": {"total_value": {"value": NAV_cash, "weight": 1}},
     }
 
 
@@ -111,12 +129,12 @@ def calulate_return(val_t0, val_t1, weight=1):
     return_value = None
     try:
         return_value = weight * (val_t1 / val_t0)
+        if weight == 1:
+            return_value = return_value - 1
     except decimal.InvalidOperation:
         pass
-    except decimal.ZeroDivisionError:
+    except decimal.DivisionByZero:
         pass
-    if weight == 1:
-        return_value = return_value - 1
 
     return return_value
 
