@@ -30,12 +30,16 @@ def book_interest_unrealized(deal: Deal, amount: Money, date):
         Leg.objects.create(
             transaction=transaction, account=deal.fi_unrealized_account, amount=amount,
         )
+    deal.last_booking_interest = date
+    deal.save(update_fields=["last_booking_interest"])
 
 
 def book_interest_all_deals_from_last_booking_day():
 
     all_deals = Deal.objects.all()
+    import pdb
 
+    pdb.set_trace()
     for deal in all_deals:
 
         if deal.last_booking_interest:
@@ -47,12 +51,14 @@ def book_interest_all_deals_from_last_booking_day():
             difference_in_quarters = DateQuarter.from_date(
                 datetime.datetime.now()
             ) - DateQuarter.from_date(deal.date)
+            last_booking_day = deal.date
+        import pdb
 
         for quarter in range(difference_in_quarters):
             last_day_in_quarter = [
                 day for day in DateQuarter.from_date(last_booking_day).days()
             ][-1]
-            if datetime.datetime.now() < last_day_in_quarter:
+            if last_booking_day <= last_day_in_quarter:
                 break
 
             interest = calculate_interest_in_quarter(

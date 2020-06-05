@@ -303,6 +303,9 @@ def book_deal_values(
                 amount=Money(transaction_value, "USD"),
             )
 
+        deal.last_booking_equity_valuation = date
+        deal.save(update_fields=["last_booking_equity_valuation"])
+
     else:
 
         raise Exception("Not Implemented")
@@ -321,7 +324,7 @@ def initial_book_deal(
 ):
 
     deal = add_deal_accounts(
-        deal_date
+        deal_date,
         company_name,
         fund_manager,
         company,
