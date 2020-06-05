@@ -37,15 +37,24 @@ def book_interest_all_deals_from_last_booking_day():
     all_deals = Deal.objects.all()
 
     for deal in all_deals:
-        last_booking_day = get_last_booking_date_interest(deal)
-        difference_in_quarters = DateQuarter.from_date(
-            datetime.datetime.now()
-        ) - DateQuarter.from_date(last_booking_day)
+
+        if deal.last_booking_interest:
+            last_booking_day = get_last_booking_date_interest(deal)
+            difference_in_quarters = DateQuarter.from_date(
+                datetime.datetime.now()
+            ) - DateQuarter.from_date(deal.last_booking_interest)
+        else:
+            difference_in_quarters = DateQuarter.from_date(
+                datetime.datetime.now()
+            ) - DateQuarter.from_date(deal.date)
 
         for quarter in range(difference_in_quarters):
             last_day_in_quarter = [
                 day for day in DateQuarter.from_date(last_booking_day).days()
             ][-1]
+            if datetime.datetime.now() < last_day_in_quarter:
+                break
+
             interest = calculate_interest_in_quarter(
                 calculate_total_value_fixed_income_from_deal(deal), deal.interest_loan
             )

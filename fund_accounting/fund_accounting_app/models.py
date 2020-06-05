@@ -27,6 +27,8 @@ class FundManager(models.Model):
 class Deal(models.Model):
 
     uuid = models.UUIDField(default=uuid.uuid4)
+    date = models.DateField(null=False)
+
     # foreign keys
     company = models.UUIDField(null=False, blank=False)
     fund_manager = models.ForeignKey(FundManager, null=False, on_delete=models.CASCADE)
@@ -72,6 +74,9 @@ class Deal(models.Model):
     interest_equity = models.DecimalField(
         max_digits=8, decimal_places=4, null=False, blank=False
     )
+
+    last_booking_interest = models.DateTimeField(null=True)
+    last_booking_equity_valuation = models.DateTimeField(null=True)
 
     @property
     def portfolio_equity(self):
