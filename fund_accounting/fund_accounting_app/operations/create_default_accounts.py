@@ -187,6 +187,7 @@ def get_deal_id():
 
 
 def add_deal_accounts(
+    deal_date,
     company_name,
     fund_manager,
     company,
@@ -253,6 +254,7 @@ def add_deal_accounts(
     account_fixed_income_unreal.save()
 
     deal = Deal(
+        date=deal_date,
         company=company,
         fund_manager=fund_manager,
         eq_account_value=account_equity_value,
@@ -319,6 +321,7 @@ def initial_book_deal(
 ):
 
     deal = add_deal_accounts(
+        deal_date
         company_name,
         fund_manager,
         company,
