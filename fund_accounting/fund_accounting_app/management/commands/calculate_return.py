@@ -34,14 +34,29 @@ class Command(BaseCommand):
         NAVs = default.get_top_level_portfolio_returns(
             options["pf_number"], options["start_date"], options["end_date"]
         )
-        pddf = pandas.DataFrame.from_dict(
-            {(i, j): NAVs[i][j] for i in NAVs.keys() for j in NAVs[i].keys()},
+        relative = {}
+        absolute = {}
+        for key in NAVs.keys():
+
+            relative[key] = NAVs[key]["relative"]
+            absolute[key] = NAVs[key]["absolute"]
+
+        pd_relative = pandas.DataFrame().from_dict(relative)
+
+        pd_absolute = pandas.DataFrame.from_dict(
+            {
+                (i, j): absolute[i][j]
+                for i in absolute.keys()
+                for j in absolute[i].keys()
+            },
             orient="index",
         )
-        import pdb
 
-        pdb.set_trace()
-        pddf.to_csv(
+        pd_absolute.to_csv(
+            f'PF-Development-Absolute-Vals_{options["start_date"].strftime("%d-%m-%Y")}_{options["end_date"].strftime("%d-%m-%Y")}.csv'
+        )
+
+        pd_relative.to_csv(
             f'Returns_{options["start_date"].strftime("%d-%m-%Y")}_{options["end_date"].strftime("%d-%m-%Y")}.csv'
         )
 
