@@ -75,12 +75,10 @@ def get_top_level_portfolio_value(pf_number, date=None):
                 "value": NAV_equity_stock + NAV_fixed_income_stock,
                 "weight": (NAV_equity_stock + NAV_fixed_income_stock) / total_nav,
             },
+            "uninvested_cash": {"value": NAV_cash, "weight": (NAV_cash / total_nav)},
         },
         "equity": {
-            "total_value": {
-                "value": NAV_equity,
-                "weight": (NAV_equity / total_nav) - 1,
-            },
+            "total_value": {"value": NAV_equity, "weight": (NAV_equity / total_nav),},
             "change_value": {
                 "value": NAV_equity_value,
                 "weight": NAV_equity_value / NAV_equity,
@@ -93,7 +91,7 @@ def get_top_level_portfolio_value(pf_number, date=None):
         "fixed_income": {
             "total_value": {
                 "value": NAV_fixed_income,
-                "weight": (NAV_fixed_income / total_nav) - 1,
+                "weight": (NAV_fixed_income / total_nav),
             },
             "change_value": {
                 "value": NAV_fixed_income_value,
@@ -104,9 +102,7 @@ def get_top_level_portfolio_value(pf_number, date=None):
                 "weight": (NAV_fixed_income_stock / NAV_fixed_income),
             },
         },
-        "cash": {
-            "total_value": {"value": NAV_cash, "weight": (NAV_cash / total_nav) - 1}
-        },
+        "cash": {"total_value": {"value": NAV_cash, "weight": (NAV_cash / total_nav)}},
     }
 
 
@@ -120,7 +116,8 @@ def calulate_return(val_t0, val_t1, weight=1):
     except decimal.ZeroDivisionError:
         pass
     if weight == 1:
-        return return_value - 1
+        return_value = return_value - 1
+
     return return_value
 
 

@@ -7,9 +7,7 @@ from django.db import transaction as db_transaction
 
 def create_parent_accounts():
     """
-    
     Function to create all root-accounts needed.
-
 
     """
     portfolio_1_account = Account(
@@ -329,7 +327,7 @@ def initial_book_deal(
         interest_loan,
         interest_equity,
     )
-    # deal = Deal.objects.get(id=1)
+
     book_deal_values(
         deal=deal, price_valuation=value_per_share, date=deal_date, initial_booking=True
     )
