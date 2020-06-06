@@ -1,0 +1,11 @@
+,,begin_period,end_period
+total,total_value,"US$10,278,652.00","US$10,617,354.41"
+total,change_value,"US$37,500.00","US$376,202.41"
+total,added_value,"US$4,241,152.00","US$4,241,152.00"
+equity,total_value,"US$241,152.00","US$241,152.00"
+equity,change_value,US$0.00,US$0.00
+equity,added_value,"US$241,152.00","US$241,152.00"
+fixed_income,total_value,"US$4,037,500.00","US$4,376,202.41"
+fixed_income,change_value,"US$37,500.00","US$376,202.41"
+fixed_income,added_value,"US$4,000,000.00","US$4,000,000.00"
+cash,total_value,"US$6,000,000.00","US$6,000,000.00"

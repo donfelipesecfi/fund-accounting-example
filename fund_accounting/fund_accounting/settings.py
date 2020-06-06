@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "mptt",
     "hordak",
     "fund_accounting_app",
+    "rest_framework",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [

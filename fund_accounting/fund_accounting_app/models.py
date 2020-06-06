@@ -31,6 +31,7 @@ class Deal(models.Model):
 
     # foreign keys
     company = models.UUIDField(null=False, blank=False)
+    company_name = models.CharField(max_length=200)
     fund_manager = models.ForeignKey(FundManager, null=False, on_delete=models.CASCADE)
 
     eq_account_value = models.ForeignKey(
