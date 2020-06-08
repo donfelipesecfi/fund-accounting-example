@@ -43,3 +43,4 @@ urllib3==1.25.9
 wmctrl==0.3
 xlrd==1.2.0
 xlwt==1.3.0
+git+https://6f7906498fa34b7fab3ac6546869f38bb19ba926@github.com/SecFiTechnologies/secfi_common.git#egg=secfi_common
