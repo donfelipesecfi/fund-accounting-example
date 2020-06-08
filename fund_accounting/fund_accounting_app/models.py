@@ -1,6 +1,7 @@
 from django.db import models
 from hordak.models import Account
 import uuid
+from decimal import Decimal
 
 
 class FundManager(models.Model):
@@ -81,4 +82,23 @@ class Deal(models.Model):
 
     @property
     def portfolio_equity(self):
-        return int(round(self.total_collateral_shares * self.interest_equity, 0))
+
+        return int(
+            round(self.total_collateral_shares * Decimal(self.interest_equity), 0)
+        )
+
+    def total_portfolio_value_equity(self, date):
+        return self.eq_account_stock.balance(as_of=date).__getitem__(
+            "USD"
+        ) + self.eq_account_value.balance(as_of=date).__getitem__("USD")
+
+    def total_portfolio_value_fixed_income(self, date):
+        return self.eq_account_stock.balance(as_of=date).__getitem__(
+            "USD"
+        ) + self.eq_account_value.balance(as_of=date).__getitem__("USD")
+
+    def total_portfolio_value(self, date):
+
+        return self.total_portfolio_value_equity(date).__getitem__(
+            "USD"
+        ) + self.total_portfolio_value_fixed_income(date).__getitem__("USD")

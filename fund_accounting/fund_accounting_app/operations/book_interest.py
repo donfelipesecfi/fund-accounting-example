@@ -52,7 +52,6 @@ def book_interest_all_deals_from_last_booking_day():
                 datetime.datetime.now()
             ) - DateQuarter.from_date(deal.date)
             last_booking_day = deal.date
-        import pdb
 
         for quarter in range(difference_in_quarters):
             last_day_in_quarter = [
