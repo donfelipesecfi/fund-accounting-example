@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from fund_accounting_app import views
+
 from django.conf.urls import url
 from rest_framework import routers
 from .url_swagger import urlpatterns as swagger_urls
 
 router = routers.SimpleRouter()
-router.register(r"deal", views.DealView)
+
+router.register(r"portfolio", views.portfolio_view.PortfolioView, basename="portfolio")
+
+
 urlpatterns = router.urls + swagger_urls

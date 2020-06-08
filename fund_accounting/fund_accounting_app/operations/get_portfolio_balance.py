@@ -1,5 +1,5 @@
 from hordak.models import Account, Money
-from .helper_conversions import convert_balance_to_money_usd
+from .helpers import convert_balance_to_money_usd
 import decimal
 
 
@@ -136,10 +136,20 @@ def calulate_return(val_t0, val_t1):
     return return_value
 
 
-def get_top_level_portfolio_returns(pf_number, ref_date_start, ref_date_end):
+def get_top_level_portfolio_returns(
+    pf_number,
+    reference_date_start,
+    reference_date_end,
+    add_absolute_values=False,
+    **kwargs,
+):
 
-    portfolio_ref_date_start = get_top_level_portfolio_value(pf_number, ref_date_start)
-    portfolio_ref_date_end = get_top_level_portfolio_value(pf_number, ref_date_end)
+    portfolio_ref_date_start = get_top_level_portfolio_value(
+        pf_number, reference_date_start
+    )
+    portfolio_ref_date_end = get_top_level_portfolio_value(
+        pf_number, reference_date_end
+    )
 
     portfolio_ref_date_start
 
@@ -151,7 +161,7 @@ def get_top_level_portfolio_returns(pf_number, ref_date_start, ref_date_end):
         for key2 in portfolio_ref_date_start[key].keys():
 
             if key2 == "total_value":
-                relative_vals[f"{key2} in %"] = calulate_return(
+                relative_vals[f"change"] = calulate_return(
                     portfolio_ref_date_start[key][key2]["value"],
                     portfolio_ref_date_end[key][key2]["value"],
                 )
@@ -168,7 +178,12 @@ def get_top_level_portfolio_returns(pf_number, ref_date_start, ref_date_end):
                 "begin_period": portfolio_ref_date_start[key][key2]["value"],
                 "end_period": portfolio_ref_date_end[key][key2]["value"],
             }
-        reative_absolut_values = {"relative": relative_vals, "absolute": absolute_vals}
-        return_dict[key] = reative_absolut_values
+        values = {"relative": relative_vals}
+        if add_absolute_values:
+            values["absolute"] = absolute_vals
+        return_dict[key] = values
+
+    return_dict["reference_date_start"] = reference_date_start
+    return_dict["reference_date_end"] = reference_date_end
 
     return return_dict

@@ -149,14 +149,14 @@ def book_deal(
         company_name,
         fund_manager,
         company,
-        total_loan_amount,st
+        total_loan_amount,
         total_collateral_shares,
         interest_loan,
         interest_equity,
     )
 
     book_deal_values(
-        deal=deal, price_valuation=value_per_share, date=deal_date, initial_booking=True
+        deal=deal, price_valuation=value_per_share, date=date, initial_booking=True
     )
 
     return deal
